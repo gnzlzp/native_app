@@ -1,7 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit'
+import listInspecSlice from './listInspecSlice'
+import listManSlice from './listManSlice'
+import listProofSlice from './listProofSlice'
 
-export const store = configureStore({
+
+const store = configureStore({
   reducer: {
-    imp: impReducer,
+    listInspec: listInspecSlice,
+    listMan: listManSlice,
+    listProof: listProofSlice,
   },
-})
+});
+
+export default store;

@@ -1,17 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { listInspec } from '../../assets/listInspec';
 import { Button, List } from 'react-native-paper';
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from 'react-native';
 import RadioButtons from "./RadioButtons";
 import TextInputs from './TextInputs';
-const { listInspec } = require('../../assets/listInspec.js');
 import uuid from 'react-native-uuid';
+import { useSelector } from 'react-redux';
 
 function FormInsp() {
 
   const [obj, setObj] = useState(listInspec)
 
-   const storageData = async (value) => {
+  const list = useSelector((state) => state.listInspec)
+
+  useEffect(() => {
+    console.log(list)
+  })
+  const storageData = async (value) => {
     try {
       await AsyncStorage.setItem('inspec', JSON.stringify(value));
     }
@@ -50,13 +56,13 @@ function FormInsp() {
   }
   return (
     <>
-      {obj.map((item, index) => {
+      {list.map((item, index) => {
         return (
           <>
             <List.Item key={index} title={item.question} titleStyle={styles.titleTask} titleNumberOfLines={5} style={styles.titleTask} />
             {item.type === 'input'
-              ? <TextInputs key={uuid.v4()} index={index} obj={item} setObj={setObj} />
-              : <RadioButtons key={uuid.v4()} index={index} obj={obj} setObj={setObj} />
+              ? <TextInputs key={uuid.v4()} index={index} itemID={item.id}/>
+              : <RadioButtons key={uuid.v4()} index={index} />
             }
           </>
         )

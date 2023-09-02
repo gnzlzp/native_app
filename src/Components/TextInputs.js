@@ -1,26 +1,71 @@
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { TextInput } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
-import { HelperText, TextInput } from "react-native-paper";
-import { useState } from 'react';
+import { updateItemAnswer } from "../../redux/listInspecSlice";
 
-const TextInputs = ({ obj }) => {
+const TextInputs = ({ itemID }) => {
 
+  
   const renderView = () => {
 
-    const [pressure, setPressure] = useState('');
+    const obj = useSelector((state) => state.listInspec)
+    const [pressure, setPressure] = useState({pressureOn: '', pressureOff: ''});
+    
+    useEffect(() => {
+      console.log('lista de inputs', '->', obj)
+      console.log('presiones','->',pressure)
+    }, [])
+  
+    const dispatch = useDispatch();
+  
 
-    switch (obj.question) {
-      case 'Registre las presiones de encendido y apagado del motor en el control eléctrico [psi].':
+    const handleAnswerChange = (value, fieldName) => {
+      switch (fieldName) {
+        case 'pressureOn':
+          setPressure({ ...pressure, pressureOn: value });
+          break;
+        case 'pressureOff':
+          setPressure({ ...pressure, pressureOff: value });
+          break;
+        default:
+          break;
+      }
+      dispatch(updateItemAnswer({ id:itemID, answer: pressure }));
+    
+    };
+
+
+
+    switch (itemID) {
+      case 13:
         return (
           <View>
             <View style={styles.input}>
-              <TextInput mode="outlined" inputMode="numeric" right={<TextInput.Affix text="PSI" />} label='Presión de encendido' placeholderTextColor={'lightgrey'} style={styles.text} value={pressure} onChangeText={()=>setPressure(pressure)}/>
+              <TextInput
+                mode="outlined"
+                inputMode="numeric"
+                right={<TextInput.Affix text="PSI" />}
+                label='Presión de encendido'
+                placeholderTextColor={'lightgrey'}
+                style={styles.text}
+                value={pressure.pressureOn}
+                onChangeText={(value) => handleAnswerChange(value, 'pressureOn')}
+              />
             </View>
             <View style={styles.input}>
-              <TextInput mode="outlined" inputMode="numeric" right={<TextInput.Affix text="PSI" />} label='Presión de apagado' />
+              <TextInput
+                mode="outlined"
+                inputMode="numeric"
+                right={<TextInput.Affix text="PSI" />}
+                label='Presión de apagado'
+                value={pressure.pressureOff}
+                onChangeText={(value) => handleAnswerChange(value, 'pressureOff')}
+              />
             </View>
           </View>
         );
-      case 'Registre día de la semana y hora de inicio de la prueba automática (realizar la observación respectiva si la prueba se realiza en un día/hora diferente a la programada).':
+      case 14:
         return (
           <View>
             <View style={styles.container}>
@@ -37,6 +82,7 @@ const TextInputs = ({ obj }) => {
         break;
     }
   }
+
   return (
     <View>
       {renderView()}

@@ -1,33 +1,45 @@
-import { Divider, Text, RadioButton, Button } from 'react-native-paper';
+import { useDispatch , useSelector } from 'react-redux';
 import { useState } from 'react';
+import { Divider, Text, RadioButton, Button } from 'react-native-paper';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import uuid from 'react-native-uuid';
+import { updateItemAnswer } from '../../redux/listInspecSlice';
 
 
 const condition = ['Mal', 'Bien', 'No Presenta'];
 
-function RadioButtons({ index, obj, setObj }) {
+function RadioButtons({ index }) {
 
   const indexAct = index
 
-  const [value, setValue] = useState('');
+  const items = useSelector((state) => state.listInspec)
+
+  const dispatch = useDispatch()
 
   const handleObj = (value) => {
-    const updateObj = [...obj]
-    updateObj[index].answer = value;
-    setObj(updateObj)
-    setValue(value)
+    const updateObj = [...items]
+    updateObj[indexAct].answer = value;
+    dispatch(updateItemAnswer({ id: id, answer: { ...item.answer, [name]: value } }))
   }
+
+  // const [value, setValue] = useState('');
+
+  // const handleObj = (value) => {
+  //   const updateObj = [...items]
+  //   updateObj[index].answer = value;
+  //   setObj(updateObj)
+  //   setValue(value)
+  // }
   
   return (
     <>
 
-      <RadioButton.Group onValueChange={handleObj} value={obj[indexAct].answer} >
+      <RadioButton.Group onValueChange={handleObj} value={items[indexAct].answer} >
         {condition.map((cond, index) => (
           <>
             <View style={styles.container}>
               <TouchableOpacity key={index} style={styles.checks} onPress={() => handleObj(cond)}>
-                <RadioButton key={index} value={cond} status={obj[indexAct].answer === cond ? 'checked' : 'unchecked'} />
+                <RadioButton key={index} value={cond} status={items[indexAct].answer === cond ? 'checked' : 'unchecked'} />
                 <Text style={styles.text}>{cond}</Text>
               </TouchableOpacity>
             </View>
